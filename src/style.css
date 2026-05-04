@@ -1,0 +1,121 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&family=Courier+Prime&display=swap');
+
+:root {
+  --bg: #d4dfa0;
+  --text: #2a2a1e;
+  --accent: #8a9a3c;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background-color: var(--bg);
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Courier Prime', monospace;
+  color: var(--text);
+}
+
+.site-label {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 0.85rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  margin-bottom: 2.5rem;
+  text-transform: lowercase;
+}
+
+.album-display {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+#album-cover {
+  width: 500px;
+  height: 500px;
+  object-fit: cover;
+  cursor: pointer;
+  border-radius: 50%;
+  animation: spin 8s linear infinite;
+
+  border: 80px solid #0d0d0d;
+
+  /* REMOVE EVERYTHING SHADOW-RELATED */
+  box-shadow: none;
+  filter: none;
+
+  transition: transform 0.3s ease;
+}
+
+#album-cover:hover {
+  animation-play-state: paused;
+  transform: translate(-2px, -2px);
+
+  /* fully clean */
+  box-shadow: none;
+  filter: none;
+
+  #album-cover:hover {
+  animation-play-state: paused;
+  transform: scale(1.03);
+
+  filter: drop-shadow(0 0 25px rgba(173, 216, 230, 0.6));
+}
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+
+.album-info {
+  text-align: center;
+  line-height: 1.8;
+}
+
+#album-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.4rem;
+  font-weight: 700;
+}
+
+#artist-name {
+  font-size: 0.95rem;
+  letter-spacing: 0.08em;
+}
+
+#release-year {
+  font-size: 0.8rem;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+}
+
+.hint {
+  margin-top: 3rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.25em;
+  color: var(--accent);
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+
+#counter {
+  position: fixed;
+  top: 1.5rem;
+  right: 2rem;
+  font-family: 'Courier Prime', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+}

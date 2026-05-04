@@ -1,5 +1,5 @@
 // ── STEP 1: Paste your published Google Sheet CSV URL here ──────────────────
-const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2f_swI2tGnEfFKO0ATNLRpnhMqgWLUQc4vDaGWTbHBGvstHLdvJ5mGEwHdIlgfBMNCUXDBxmM-tcV/pubhtml';
+const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2f_swI2tGnEfFKO0ATNLRpnhMqgWLUQc4vDaGWTbHBGvstHLdvJ5mGEwHdIlgfBMNCUXDBxmM-tcV/pub?output=csv';
 // It looks like: https://docs.google.com/spreadsheets/d/ABC123/pub?output=csv
 
 
@@ -18,11 +18,14 @@ let currentIndex = 0; // starts at the first album
 
 // ── STEP 4: A function that displays whichever album is at currentIndex ──────
 function showAlbum(index) {
-  const album = albums[index];         // grab the album object at this position
-  coverImg.src     = album.cover;      // swap the image
-  albumName.textContent  = album.album;   // update the title text
-  artistName.textContent = album.artist;  // update the artist text
-  releaseYear.textContent = album.year;   // update the year text
+  const album = albums[index];
+  coverImg.src = album.artwork;
+  albumName.textContent = album.album;
+  artistName.textContent = album.artist;
+  releaseYear.textContent = album.release;
+  counter.textContent = `${index + 1} / ${albums.length}`;
+  
+const counter = document.getElementById('counter');
 }
 
 

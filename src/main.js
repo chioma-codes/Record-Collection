@@ -1,75 +1,84 @@
-// ── STEP 1: Paste your published Google Sheet CSV URL here ──────────────────
+// ── STEP 1: Google Sheet CSV URL ─────────────────────────────
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vT2f_swI2tGnEfFKO0ATNLRpnhMqgWLUQc4vDaGWTbHBGvstHLdvJ5mGEwHdIlgfBMNCUXDBxmM-tcV/pub?output=csv';
-// It looks like: https://docs.google.com/spreadsheets/d/ABC123/pub?output=csv
 
 
-// ── STEP 2: Grab the HTML elements we'll be updating ───────────────────────
-// These match the id="" attributes in your HTML
-const coverImg   = document.getElementById('album-cover');
-const albumName  = document.getElementById('album-name');
-const artistName = document.getElementById('artist-name');
+// ── STEP 2: DOM ELEMENTS ─────────────────────────────────────
+const coverImg    = document.getElementById('album-cover');
+const albumName   = document.getElementById('album-name');
+const artistName  = document.getElementById('artist-name');
 const releaseYear = document.getElementById('release-year');
+const counter     = document.getElementById('counter');
 
 
-// ── STEP 3: A variable to track which album we're currently showing ─────────
-let albums = [];      // will hold all your albums once loaded
-let currentIndex = 0; // starts at the first album
+// ── STEP 3: STATE ─────────────────────────────────────────────
+let albums = [];
+let currentIndex = 0;
 
 
-// ── STEP 4: A function that displays whichever album is at currentIndex ──────
+// ── STEP 4: DISPLAY ALBUM ─────────────────────────────────────
 function showAlbum(index) {
+  if (!albums.length) return;
+
   const album = albums[index];
-  coverImg.src = album.artwork;
-  albumName.textContent = album.album;
-  artistName.textContent = album.artist;
-  releaseYear.textContent = album.release;
-  counter.textContent = `${index + 1} / ${albums.length}`;
-  
-const counter = document.getElementById('counter');
+
+  // optional fade effect (works with your CSS)
+  coverImg.style.opacity = 0;
+
+  setTimeout(() => {
+    coverImg.src = album.artwork;
+    albumName.textContent = album.album;
+    artistName.textContent = album.artist;
+    releaseYear.textContent = album.release;
+
+    // ✅ FIXED COUNTER (now works)
+    counter.textContent = `${index + 1} / ${albums.length}`;
+
+    coverImg.style.opacity = 1;
+  }, 150);
 }
 
 
-// ── STEP 5: A function that parses raw CSV text into an array of objects ─────
-// CSV comes in as plain text like:
-//   album,artist,year,cover
-//   Rumours,Fleetwood Mac,1977,https://...
-// We need to turn each row into a neat object like: { album, artist, year, cover }
-
+// ── STEP 5: CSV PARSER ────────────────────────────────────────
 function parseCSV(text) {
-  const lines = text.trim().split('\n');  // split into individual rows
-  const headers = lines[0].split(',');    // first row is the column names
+  const lines = text.trim().split('\n');
+  const headers = lines[0].split(',');
 
-  // For every row after the header, zip it together with the headers
   return lines.slice(1).map(line => {
     const values = line.split(',');
     const obj = {};
+
     headers.forEach((header, i) => {
-      obj[header.trim()] = values[i]?.trim(); // .trim() removes any hidden spaces
+      obj[header.trim()] = values[i]?.trim();
     });
+
     return obj;
   });
 }
 
 
-// ── STEP 6: Fetch the Sheet data when the page loads ────────────────────────
-// fetch() reaches out to the URL and gets back the CSV text
+// ── STEP 6: FETCH SHEET DATA ──────────────────────────────────
 fetch(SHEET_URL)
-  .then(response => response.text())   // read the response as plain text
+  .then(res => res.text())
   .then(text => {
-    albums = parseCSV(text);           // parse it into our albums array
-    showAlbum(currentIndex);           // display the first album right away
+    albums = parseCSV(text);
+
+    if (!albums.length) {
+      albumName.textContent = "No albums found.";
+      return;
+    }
+
+    showAlbum(currentIndex);
   })
-  .catch(error => {
-    // If something goes wrong (bad URL, no internet), log it so you can debug
-    console.error('Could not load album data:', error);
-    albumName.textContent = 'Could not load albums. Check the console.';
+  .catch(err => {
+    console.error('Could not load album data:', err);
+    albumName.textContent = 'Error loading albums.';
   });
 
 
-// ── STEP 7: When the cover is clicked, advance to the next album ─────────────
+// ── STEP 7: CLICK TO ADVANCE ──────────────────────────────────
 coverImg.addEventListener('click', () => {
+  if (!albums.length) return;
+
   currentIndex = (currentIndex + 1) % albums.length;
-  // The % (modulo) wraps back to 0 after the last album,
-  // so it loops forever instead of stopping at the end
   showAlbum(currentIndex);
 });
